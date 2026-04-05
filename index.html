@@ -2,230 +2,410 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>QRMe AI — Спецификация для разработки</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>QRMe AI — Токеномика</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0e1117;--bg2:#161b22;--bg3:#1c2129;--bd:#30363d;--tx:#e6edf3;--tx2:#8b949e;--tx3:#484f58;--gd:#FFB800;--gd2:rgba(255,184,0,.15);--ac:#7D4FFF;--ac2:rgba(125,79,255,.15);--gn:#3fb950;--gn2:rgba(63,185,80,.15);--rd:#f85149;--rd2:rgba(248,81,73,.15);--bl:#58a6ff;--heading:'DM Serif Display',serif;--mono:'JetBrains Mono',monospace}
-*{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--tx);font-family:var(--mono);font-size:14px;line-height:1.7}
-::selection{background:var(--ac);color:#fff}
-a{color:var(--bl);text-decoration:none}a:hover{text-decoration:underline}
-.wrap{max-width:960px;margin:0 auto;padding:0 24px}
-section{padding:56px 0;border-bottom:1px solid var(--bd)}
-.nav{position:sticky;top:0;z-index:100;background:rgba(14,17,23,.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--bd);padding:12px 0}
-.nav-inner{display:flex;align-items:center;gap:24px;flex-wrap:wrap}
-.nav-logo{font-family:var(--heading);font-size:1.2rem;color:var(--gd)}
-.nav-links{display:flex;gap:16px;font-size:.7rem;color:var(--tx2)}.nav-links a{color:var(--tx2);text-transform:uppercase;letter-spacing:.1em}.nav-links a:hover{color:var(--tx)}
-h1{font-family:var(--heading);font-size:clamp(2rem,5vw,3rem);font-weight:400;margin-bottom:8px}
-h2{font-family:var(--heading);font-size:clamp(1.4rem,3vw,2rem);font-weight:400;margin-bottom:16px}
-h3{font-family:var(--mono);font-size:.85rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px;color:var(--gd)}
-p{color:var(--tx2);margin-bottom:16px;max-width:680px}
-.badge{display:inline-block;padding:3px 10px;font-size:.6rem;font-weight:500;letter-spacing:.05em;border-radius:20px;text-transform:uppercase}
-.badge--ok{background:var(--gn2);color:var(--gn);border:1px solid rgba(63,185,80,.3)}
-.badge--wip{background:var(--gd2);color:var(--gd);border:1px solid rgba(255,184,0,.3)}
-.badge--todo{background:var(--rd2);color:var(--rd);border:1px solid rgba(248,81,73,.3)}
-.badge--info{background:var(--ac2);color:var(--ac);border:1px solid rgba(125,79,255,.3)}
-.flow{display:flex;flex-direction:column;gap:2px;margin:20px 0}
-.flow-step{background:var(--bg2);border:1px solid var(--bd);padding:16px 20px;transition:border-color .2s}.flow-step:hover{border-color:var(--gd)}
-.flow-step-num{font-size:.6rem;color:var(--tx3);letter-spacing:.15em;text-transform:uppercase;margin-bottom:4px}
-.flow-step-title{font-weight:700;font-size:.85rem;margin-bottom:4px}
-.flow-step-desc{font-size:.78rem;color:var(--tx2)}
-.flow-step--highlight{border-left:3px solid var(--gd)}.flow-step--problem{border-left:3px solid var(--rd)}.flow-step--new{border-left:3px solid var(--gn)}
-.flow-arrow{text-align:center;color:var(--tx3);font-size:.8rem;padding:2px 0}
-table{width:100%;border-collapse:collapse;font-size:.8rem;margin:16px 0}
-th{text-align:left;padding:10px 12px;border-bottom:2px solid var(--bd);color:var(--tx3);font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;font-weight:400}
-td{padding:10px 12px;border-bottom:1px solid var(--bd)}tr:hover{background:rgba(255,184,0,.02)}
-.td-gd{color:var(--gd);font-weight:700}.td-gn{color:var(--gn)}.td-rd{color:var(--rd)}
-pre{background:var(--bg2);border:1px solid var(--bd);padding:16px;overflow-x:auto;font-size:.75rem;line-height:1.6;margin:12px 0;border-radius:6px}
-.c{background:var(--bg3);padding:2px 6px;border-radius:3px;font-size:.75rem;font-family:var(--mono)}
-.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin:16px 0}
-.card{background:var(--bg2);border:1px solid var(--bd);padding:20px;transition:border-color .2s}.card:hover{border-color:var(--gd)}
-.card-title{font-weight:700;font-size:.85rem;margin-bottom:6px}
-.card-desc{font-size:.75rem;color:var(--tx2)}
-.compare{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:20px 0}@media(max-width:700px){.compare{grid-template-columns:1fr}}
-.compare-col{background:var(--bg2);border:1px solid var(--bd);padding:20px}
-.alert{padding:16px 20px;border-left:3px solid;margin:16px 0;font-size:.8rem}
-.alert--warn{border-color:var(--gd);background:var(--gd2);color:var(--gd)}
-.alert--danger{border-color:var(--rd);background:var(--rd2);color:var(--rd)}
-.alert--info{border-color:var(--bl);background:rgba(88,166,255,.08);color:var(--bl)}
-.alert--ok{border-color:var(--gn);background:var(--gn2);color:var(--gn)}
-@media(max-width:600px){body{font-size:13px}section{padding:40px 0}}
+:root{
+  --bg:#14171F;--bg2:#1A1D27;--bg3:#20232F;
+  --ac:#7D4FFF;--ac2:#5200FF;--ac-l:#B298FF;--ac-g:rgba(125,79,255,.3);
+  --gd:#FFB800;--gd-g:rgba(255,184,0,.25);
+  --gn:#34C759;--rd:#FF6B6B;
+  --tx:#EBE8E0;--tx2:#817F7F;--tx3:#3A3A3A;
+  --bd:rgba(235,232,224,.06);--bd2:rgba(235,232,224,.12);
+  --heading:'DM Serif Display',Georgia,serif;
+  --mono:'JetBrains Mono','SFMono-Regular',monospace;
+  --bez:cubic-bezier(.625,.05,0,1);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:var(--gd) var(--bg)}
+body{background:var(--bg);color:var(--tx);font-family:var(--mono);font-weight:300;font-size:14px;line-height:1.75;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+::selection{background:var(--gd);color:#000}
+
+/* ── Scanlines (Utopia Tokyo style) ── */
+.scan{position:fixed;inset:0;z-index:9998;pointer-events:none;opacity:.04;
+  background:repeating-linear-gradient(to bottom,rgba(235,232,224,.05) 0px 1px,transparent 2px 5px)}
+
+/* ── Progress ── */
+.prog{position:fixed;top:0;left:0;height:2px;width:0;background:var(--gd);z-index:10001;box-shadow:0 0 12px var(--gd-g)}
+
+/* ── Cursor ── */
+@media(hover:hover){body{cursor:none}
+.cur{position:fixed;pointer-events:none;z-index:99999;will-change:transform}
+.cur-r{width:24px;height:24px;border:1px solid var(--gd);border-radius:0;transform-origin:center;transition:width .3s var(--bez),height .3s var(--bez),border-color .3s}
+.cur-r.hov{width:44px;height:44px;border-color:var(--ac-l)}
+.cur-d{width:3px;height:3px;background:var(--gd);border-radius:0}}
+@media(hover:none){.cur{display:none}}
+
+/* ── Ambient glow ── */
+.glow{position:fixed;border-radius:50%;filter:blur(120px);pointer-events:none;z-index:0;opacity:.6}
+.glow-1{width:500px;height:500px;background:radial-gradient(circle,var(--ac-g),transparent 65%);top:-10%;left:-5%}
+.glow-2{width:350px;height:350px;background:radial-gradient(circle,var(--gd-g),transparent 65%);bottom:10%;right:-5%}
+
+/* ── Layout ── */
+.wrap{max-width:1200px;margin:0 auto;padding:0 clamp(20px,5vw,64px);position:relative;z-index:1}
+section{padding:clamp(72px,12vh,160px) 0}
+
+/* ── Floating coins ── */
+.fcoin{position:fixed;z-index:0;pointer-events:none;opacity:.1;will-change:transform;
+  background:linear-gradient(145deg,#ffd54f,#c49000);border-radius:0;
+  clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);
+  transform-style:preserve-3d}
+.fcoin::after{content:'Q';display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-family:var(--heading);font-weight:400;color:rgba(0,0,0,.3);font-size:35%}
+
+/* ── Reveal ── */
+.r{opacity:0;transform:translateY(28px);transition:opacity .6s var(--bez),transform .6s var(--bez)}
+.r.v{opacity:1;transform:none}
+.d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}.d4{transition-delay:.4s}.d5{transition-delay:.5s}
+
+/* Split text */
+.split span{display:inline-block;opacity:0;transform:translateY(40px);transition:opacity .6s var(--bez),transform .6s var(--bez)}
+.split.v span{opacity:1;transform:none}
+
+/* ══════════ TYPOGRAPHY ══════════
+   Heading: DM Serif Display — elegant high-contrast serif
+   Body/Data: JetBrains Mono — technical monospace
+   Scale: Major Third (1.25) */
+.th{font-family:var(--heading);font-weight:400;font-size:clamp(3rem,8.5vw,7.5rem);line-height:.95;letter-spacing:-.02em}
+.t2{font-family:var(--heading);font-weight:400;font-size:clamp(1.8rem,4vw,3.2rem);line-height:1.1;letter-spacing:-.01em}
+.t3{font-family:var(--mono);font-weight:500;font-size:clamp(.85rem,1.4vw,1rem);line-height:1.4;text-transform:uppercase;letter-spacing:.08em}
+.tc{font-family:var(--mono);font-weight:400;font-size:.6rem;letter-spacing:.3em;text-transform:uppercase;color:var(--tx2)}
+.tn{font-family:var(--mono);font-weight:700;letter-spacing:-.02em}
+.ti{font-family:var(--heading);font-style:italic;font-weight:400}
+
+/* ══════════ HERO ══════════ */
+.hero{min-height:100svh;display:flex;align-items:center;position:relative}
+.hero-g{display:grid;grid-template-columns:1fr auto;align-items:center;gap:clamp(40px,7vw,100px);width:100%}
+@media(max-width:900px){.hero-g{grid-template-columns:1fr;text-align:center;justify-items:center}}
+
+.hero-eye{margin-bottom:24px;display:flex;align-items:center;gap:14px}
+.hero-eye::before{content:'';width:48px;height:1px;background:var(--gd)}
+@media(max-width:900px){.hero-eye{justify-content:center}}
+.hero-sub{max-width:480px;font-size:clamp(.78rem,1.2vw,.9rem);color:var(--tx2);margin-bottom:48px;line-height:1.8}
+@media(max-width:900px){.hero-sub{margin-inline:auto}}
+
+.hero-stats{display:flex;gap:clamp(28px,4vw,56px);flex-wrap:wrap}
+@media(max-width:900px){.hero-stats{justify-content:center}}
+.stat{display:flex;flex-direction:column;gap:6px}
+.stat-v{font-size:clamp(1.6rem,3.5vw,2.6rem);color:var(--gd)}
+.stat-v::after{content:'';display:block;width:100%;height:1px;background:linear-gradient(90deg,var(--gd),transparent);opacity:.3;margin-top:4px}
+
+/* Scroll cue */
+.scue{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer}
+.scue span{font-size:.5rem;letter-spacing:.3em;text-transform:uppercase;color:var(--tx3)}
+.scue i{width:1px;height:40px;background:linear-gradient(to bottom,var(--gd),transparent);animation:scue 2.5s ease-in-out infinite}
+@keyframes scue{0%,100%{opacity:.2}50%{opacity:.8}}
+
+/* ══════════ 3D COIN ══════════ */
+.coin-sc{perspective:1200px;width:clamp(200px,26vw,360px);aspect-ratio:1}
+.coin-b{width:100%;height:100%;position:relative;transform-style:preserve-3d;animation:cspin 7s linear infinite;will-change:transform}
+.coin-f{position:absolute;inset:8%;clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);backface-visibility:hidden;display:flex;align-items:center;justify-content:center;flex-direction:column}
+.coin-front{
+  background:radial-gradient(ellipse at 30% 20%,rgba(255,255,255,.2),transparent 55%),
+    radial-gradient(ellipse at 75% 85%,rgba(0,0,0,.18),transparent 50%),
+    linear-gradient(155deg,#ffe082,#ffca28 18%,#ffb300 35%,#c49000 52%,#ffb300 68%,#ffd54f 85%,#ffe082);
+  box-shadow:0 0 60px var(--gd-g),inset 0 -10px 35px rgba(0,0,0,.25),inset 0 8px 18px rgba(255,255,255,.15)}
+.coin-front::after{content:'';position:absolute;inset:0;clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);
+  background:linear-gradient(110deg,transparent 28%,rgba(255,255,255,.35) 46%,rgba(255,255,255,.5) 50%,rgba(255,255,255,.35) 54%,transparent 72%);animation:sheen 4.5s ease-in-out infinite}
+@keyframes sheen{0%,100%{transform:translateX(-140%) rotate(12deg)}50%{transform:translateX(140%) rotate(12deg)}}
+.coin-back{transform:rotateY(180deg);background:linear-gradient(155deg,#c49000,#ffb300 35%,#ffd54f 55%,#ffb300 75%,#c49000);box-shadow:inset 0 -10px 35px rgba(0,0,0,.25),inset 0 8px 18px rgba(255,255,255,.1)}
+.coin-edge{position:absolute;inset:8%;clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);backface-visibility:hidden}
+.coin-sym{font-family:var(--heading);font-weight:400;font-size:clamp(3.5rem,7vw,6rem);color:rgba(0,0,0,.5);line-height:1;text-shadow:0 2px 0 rgba(255,255,255,.2)}
+.coin-lbl{font-family:var(--mono);font-size:clamp(.45rem,.9vw,.65rem);letter-spacing:.4em;text-transform:uppercase;color:rgba(0,0,0,.3);margin-top:2px}
+.coin-ring{position:absolute;border-radius:50%;pointer-events:none;border:1px solid rgba(255,184,0,.1);animation:ring 30s linear infinite}
+.coin-ring-1{inset:-12px}.coin-ring-2{inset:-30px;border-style:dashed;border-color:rgba(125,79,255,.06);animation-direction:reverse;animation-duration:50s}
+.coin-ring-1::before{content:'';position:absolute;top:-3px;left:50%;width:6px;height:6px;background:var(--gd);box-shadow:0 0 12px var(--gd);transform:translateX(-50%)}
+@keyframes ring{to{transform:rotate(360deg)}}
+@keyframes cspin{to{transform:rotateY(360deg) rotateX(6deg)}}
+
+.coin-badge{margin-top:clamp(20px,3vw,32px);text-align:center;white-space:nowrap;font-family:var(--mono);font-weight:700;font-size:clamp(.7rem,1.2vw,.9rem);letter-spacing:.12em;text-transform:uppercase;color:var(--gd);text-shadow:0 0 24px var(--gd-g);padding:10px 24px;border:1px solid rgba(255,184,0,.15);background:rgba(255,184,0,.03);backdrop-filter:blur(12px);display:inline-block}
+.coin-badge span{color:var(--tx2);font-weight:300}
+
+/* ══════════ DIVIDER ══════════ */
+.div{border:0;border-top:1px solid var(--bd);margin:0}
+
+/* ══════════ EQUATION ══════════ */
+.eq{display:flex;align-items:center;justify-content:center;gap:clamp(16px,3.5vw,44px);flex-wrap:wrap;padding:clamp(44px,7vh,96px) 0}
+.eq-v{font-family:var(--heading);font-size:clamp(2rem,5.5vw,4rem);line-height:1}
+.eq-v small{font-size:.35em;font-family:var(--mono);color:var(--tx2);font-weight:300}
+.eq-l{font-size:.5rem;letter-spacing:.25em;text-transform:uppercase;color:var(--tx3);margin-top:8px;text-align:center;font-family:var(--mono)}
+.eq-op{font-family:var(--heading);font-size:clamp(1.5rem,3.5vw,2.8rem);color:var(--tx3)}
+
+/* ══════════ MARQUEE ══════════ */
+.mq-w{overflow:hidden;border-top:1px solid var(--bd);border-bottom:1px solid var(--bd);padding:16px 0;position:relative}
+.mq-w::before,.mq-w::after{content:'';position:absolute;top:0;bottom:0;width:80px;z-index:2;pointer-events:none}
+.mq-w::before{left:0;background:linear-gradient(90deg,var(--bg),transparent)}
+.mq-w::after{right:0;background:linear-gradient(-90deg,var(--bg),transparent)}
+.mq{display:flex;gap:36px;animation:mq 40s linear infinite;width:max-content}
+.mq-i{font-family:var(--mono);font-weight:500;font-size:clamp(.85rem,2vw,1.6rem);white-space:nowrap;color:var(--tx3);letter-spacing:.04em;text-transform:uppercase;transition:color .3s}
+.mq-i:hover{color:var(--tx)}
+.mq-i em{color:var(--ac-l);font-family:var(--heading);font-style:italic;text-transform:none;letter-spacing:0}
+@keyframes mq{to{transform:translateX(-50%)}}
+
+/* ══════════ SECTION HEADER ══════════ */
+.sh{margin-bottom:clamp(36px,5vh,64px)}
+
+/* ══════════ TABLE ══════════ */
+.tbl-w{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse}
+th{font-family:var(--mono);font-weight:400;font-size:.55rem;letter-spacing:.25em;text-transform:uppercase;color:var(--tx3);text-align:left;padding:14px 16px;border-bottom:1px solid var(--bd2)}
+td{padding:16px;border-bottom:1px solid var(--bd);font-size:.82rem;vertical-align:middle}
+tbody tr{transition:background .3s var(--bez)}
+tbody tr:hover{background:rgba(255,184,0,.02)}
+.td-dot{display:inline-block;width:6px;height:6px;border-radius:0;margin-right:8px;vertical-align:middle}
+.td-coins{font-family:var(--mono);font-weight:700;font-size:1.1rem;color:var(--gd);text-shadow:0 0 12px var(--gd-g)}
+.td-rub{color:var(--gd);font-weight:500}
+
+/* ══════════ CALC ══════════ */
+.calc{background:var(--bg2);border:1px solid var(--bd2);padding:clamp(24px,4vw,44px);position:relative;overflow:hidden}
+.calc-top{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:28px}
+.calc-val{font-family:var(--heading);font-size:clamp(2.2rem,5vw,3.6rem);color:var(--gd);text-shadow:0 0 32px var(--gd-g)}
+.calc-val small{font-size:.3em;font-family:var(--mono);color:var(--tx2);font-weight:300}
+.calc-coins{font-family:var(--mono);font-size:clamp(.85rem,1.4vw,1.1rem);color:var(--tx2)}
+.calc-coins b{color:var(--gd);font-weight:700}
+.calc-range{width:100%;-webkit-appearance:none;appearance:none;height:3px;border-radius:0;background:var(--tx3);outline:none;margin:8px 0 28px}
+.calc-range::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;background:var(--gd);cursor:pointer;box-shadow:0 0 16px var(--gd-g);border:2px solid var(--bg);transition:transform .2s var(--bez)}
+.calc-range::-webkit-slider-thumb:hover{transform:scale(1.2)}
+.calc-range::-moz-range-thumb{width:18px;height:18px;background:var(--gd);cursor:pointer;border:2px solid var(--bg);border-radius:0}
+.calc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(190px,100%),1fr));gap:1px}
+.calc-item{background:var(--bg3);border:1px solid var(--bd);padding:14px 18px;display:flex;align-items:center;gap:12px;transition:background .3s var(--bez)}
+.calc-item:hover{background:rgba(255,184,0,.03)}
+.calc-item-icon{width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;background:var(--bg);border:1px solid var(--bd)}
+.calc-item-name{font-size:.65rem;color:var(--tx2);text-transform:uppercase;letter-spacing:.06em}
+.calc-item-val{font-family:var(--mono);font-weight:700;font-size:1.2rem;color:var(--tx)}
+.calc-item-unit{font-size:.55rem;color:var(--tx3);text-transform:uppercase;letter-spacing:.1em}
+
+/* ══════════ PACKAGES ══════════ */
+.pkgs{display:grid;grid-template-columns:repeat(4,1fr);gap:1px}
+@media(max-width:900px){.pkgs{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:500px){.pkgs{grid-template-columns:1fr}}
+.pkg{background:var(--bg2);border:1px solid var(--bd);padding:clamp(24px,3vw,40px);text-align:center;position:relative;transition:all .6s var(--bez)}
+.pkg:hover{border-color:rgba(255,184,0,.2);background:var(--bg3)}
+.pkg--f{border-color:var(--ac);background:linear-gradient(180deg,rgba(125,79,255,.04),var(--bg2))}
+.pkg--f::after{content:'ЛУЧШАЯ ЦЕНА';position:absolute;top:-1px;left:50%;transform:translateX(-50%);background:var(--gd);color:#000;font-size:.45rem;letter-spacing:.25em;padding:4px 14px;font-family:var(--mono);font-weight:500}
+.pkg-name{font-family:var(--mono);font-weight:500;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--tx2);margin-bottom:16px}
+.pkg-price{font-family:var(--heading);font-size:clamp(1.6rem,3.5vw,2.4rem);margin-bottom:4px}
+.pkg-price small{font-size:.4em;font-family:var(--mono);font-weight:300;color:var(--tx2)}
+.pkg-coins{display:flex;align-items:center;justify-content:center;gap:8px;font-size:1rem;color:var(--gd);font-family:var(--mono);font-weight:700;margin-bottom:14px}
+.pkg-coins::before{content:'';width:6px;height:6px;background:var(--gd);box-shadow:0 0 6px var(--gd-g)}
+.pkg-per{font-size:.65rem;color:var(--tx3)}
+.pkg-disc{display:inline-block;margin-top:12px;padding:3px 10px;font-size:.55rem;font-weight:500;background:rgba(52,199,89,.06);color:var(--gn);border:1px solid rgba(52,199,89,.12);letter-spacing:.05em}
+.pkg-ex{margin-top:16px;padding-top:14px;border-top:1px solid var(--bd);font-size:.6rem;color:var(--tx3);line-height:1.6}
+.pkg-ex b{color:var(--gd);font-weight:500}
+
+/* ══════════ PIPELINE ══════════ */
+.pipe{display:grid;grid-template-columns:repeat(4,1fr);gap:1px}
+@media(max-width:900px){.pipe{grid-template-columns:1fr}}
+.pipe-s{background:var(--bg2);border:1px solid var(--bd);padding:clamp(24px,3vw,36px);position:relative;transition:all .6s var(--bez)}
+.pipe-s:hover{background:var(--bg3);border-color:var(--bd2)}
+.pipe-n{font-family:var(--heading);font-size:2.8rem;color:rgba(255,184,0,.06);line-height:1;margin-bottom:10px}
+.pipe-d{font-size:.72rem;color:var(--tx2);line-height:1.7}
+.pipe-tag{display:inline-block;margin-top:14px;padding:4px 10px;font-size:.5rem;letter-spacing:.15em;text-transform:uppercase;border:1px solid var(--bd);color:var(--gd);font-family:var(--mono)}
+.pipe-s:not(:last-child)::after{content:'→';position:absolute;right:-12px;top:50%;transform:translateY(-50%);font-size:.9rem;color:var(--tx3);z-index:2}
+@media(max-width:900px){.pipe-s:not(:last-child)::after{content:'↓';right:auto;left:50%;top:auto;bottom:-12px;transform:translateX(-50%)}}
+
+/* ══════════ FOOTER ══════════ */
+.foot{padding:32px 0;border-top:1px solid var(--bd);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.foot-logo{font-family:var(--heading);font-size:1.3rem}.foot-logo em{color:var(--gd);font-style:normal}
+.foot-note{font-size:.6rem;color:var(--tx3);letter-spacing:.05em}
+
+@media(max-width:600px){
+  section{padding:clamp(48px,8vh,100px) 0}
+  .hero{min-height:auto;padding:80px 0 48px}
+  .coin-sc{width:180px}
+  th,td{padding:10px 8px;font-size:.72rem}
+}
 </style>
 </head>
 <body>
-<nav class="nav"><div class="wrap nav-inner"><div class="nav-logo">QRMe AI · Spec</div><div class="nav-links"><a href="#current">Сейчас</a><a href="#target">Цель</a><a href="#payment">Платежи</a><a href="#tasks">Задачи</a><a href="#models">Модели</a></div></div></nav>
 
-<section><div class="wrap">
-<h1>AI Image Editor <em style="color:var(--gd)">— спецификация</em></h1>
-<p>Текущая реализация, целевая архитектура, платёжный шлюз и задачи для бэкенда. iOS ветка: <span class="c">feature/ai-image-editor</span></p>
-<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px">
-<span class="badge badge--ok">iOS MVP работает</span><span class="badge badge--wip">Бэкенд в разработке</span><span class="badge badge--todo">aggai multimodal</span><span class="badge badge--todo">Платёжный шлюз</span>
-</div></div></section>
+<div class="cur cur-r" id="cR"></div>
+<div class="cur cur-d" id="cD"></div>
+<div class="scan"></div>
+<div class="prog" id="prog"></div>
+<div class="glow glow-1"></div>
+<div class="glow glow-2"></div>
+<div id="fcoins"></div>
 
-<section id="current"><div class="wrap">
-<h2>Как работает <em style="color:var(--gd)">сейчас</em> (MVP)</h2>
-<p>iOS напрямую вызывает OpenRouter API. Нет бэкенда, нет списания монет, API ключ захардкожен.</p>
-<div class="flow">
-<div class="flow-step flow-step--highlight"><div class="flow-step-num">Step 1 · iOS</div><div class="flow-step-title">Пользователь вводит промпт</div><div class="flow-step-desc">Кнопка «✦ Изменить с ИИ ⬡5» → overlay с полем «Что изменить?» → «Изменить»</div></div>
-<div class="flow-arrow">↓</div>
-<div class="flow-step"><div class="flow-step-num">Step 2 · iOS</div><div class="flow-step-title">Подготовка фото</div><div class="flow-step-desc">Resize до 1024px → JPEG 0.75 → Base64 (~200-300KB)</div></div>
-<div class="flow-arrow">↓</div>
-<div class="flow-step flow-step--problem"><div class="flow-step-num">Step 3 · OpenRouter <span class="badge badge--danger" style="margin-left:8px">временно</span></div><div class="flow-step-title">POST openrouter.ai/api/v1/chat/completions</div><div class="flow-step-desc">Model: <span class="c">google/gemini-2.5-flash-image</span> · Multimodal: base64 image + text · API key в Swift — <strong>небезопасно</strong></div></div>
-<div class="flow-arrow">↓</div>
-<div class="flow-step"><div class="flow-step-num">Step 4</div><div class="flow-step-title">Результат: base64 PNG</div><div class="flow-step-desc">message.images[0].image_url.url → decode → UIImage → редактор</div></div>
+<!-- ══════ HERO ══════ -->
+<section class="hero">
+<div class="wrap">
+<div class="hero-g">
+  <div>
+    <div class="hero-eye tc r">QRMe AI · Tokenomics</div>
+    <h1 class="th split r d1" id="ht"></h1>
+    <p class="hero-sub r d2">Внутренняя валюта для генерации текста, изображений и&nbsp;AI&#8209;редактирования. Одна монета&nbsp;&mdash; один рубль.</p>
+    <div class="hero-stats r d3">
+      <div class="stat"><div class="stat-v tn cnt" data-t="6">0</div><div class="tc">нейросетей</div></div>
+      <div class="stat"><div class="stat-v tn cnt" data-t="5">0</div><div class="tc">типов генерации</div></div>
+      <div class="stat"><div class="stat-v tn" style="color:var(--gn)">×3</div><div class="tc">средняя маржа</div></div>
+    </div>
+  </div>
+  <div class="r d4" style="display:flex;flex-direction:column;align-items:center">
+    <div class="coin-sc" id="coinSc">
+      <div class="coin-b" id="coinB">
+        <div class="coin-f coin-front"><div class="coin-sym">Q</div><div class="coin-lbl">QRMe</div></div>
+        <div class="coin-f coin-back"><div class="coin-sym" style="font-size:clamp(2rem,4vw,3.5rem);color:rgba(0,0,0,.4)">₽</div><div class="coin-lbl">1 рубль</div></div>
+        <div class="coin-ring coin-ring-1"></div>
+        <div class="coin-ring coin-ring-2"></div>
+      </div>
+    </div>
+    <div class="coin-badge">1 монета <span>=</span> 1 рубль</div>
+  </div>
 </div>
-<div class="alert alert--danger"><strong>Проблемы:</strong> API key в коде iOS · Монеты не списываются · Нет rate limit · OpenRouter — лишний посредник · Нет логов</div>
-<h3>Почему не aggai.ru?</h3>
-<p><span class="c">input</span> принимает только строку. При массиве <span class="c">content</span> — ошибка <span class="c">input.substring is not a function</span>. Без фото в input модель генерирует новое изображение вместо редактирования.</p>
-</div></section>
-
-<section id="target"><div class="wrap">
-<h2>Как должно работать <em style="color:var(--gn)">в production</em></h2>
-<p>Всё через бэкенд QRMe + aggai.ru. Никаких ключей в клиенте.</p>
-<div class="flow">
-<div class="flow-step flow-step--highlight"><div class="flow-step-num">Step 1 · iOS</div><div class="flow-step-title">Промпт + фото</div><div class="flow-step-desc">Resize 1024px → JPEG → base64 → POST /v3/ai/edit-image (JWT auth)</div></div>
-<div class="flow-arrow">↓</div>
-<div class="flow-step flow-step--new"><div class="flow-step-num">Step 2 · Backend <span class="badge badge--todo">сделать</span></div><div class="flow-step-title">POST /v3/ai/edit-image</div><div class="flow-step-desc">JWT → userId → проверить баланс ≥ 5 монет → rate limit 10 req/min</div></div>
-<div class="flow-arrow">↓</div>
-<div class="flow-step flow-step--new"><div class="flow-step-num">Step 3 · aggai.ru <span class="badge badge--todo">multimodal</span></div><div class="flow-step-title">apiConversationMessages + content массив</div><div class="flow-step-desc"><span class="c">"content": [{"type":"image_url","image_url":{"url":"data:image/jpeg;base64,..."}}, {"type":"text","text":"Edit..."}]</span></div></div>
-<div class="flow-arrow">↓</div>
-<div class="flow-step flow-step--new"><div class="flow-step-num">Step 4 · Backend</div><div class="flow-step-title">Обработка</div><div class="flow-step-desc">Получить base64 → списать 5 монет → записать usage → вернуть <span class="c">{resultImageBase64, coinsUsed, coinsRemaining}</span></div></div>
-<div class="flow-arrow">↓</div>
-<div class="flow-step"><div class="flow-step-num">Step 5 · iOS</div><div class="flow-step-title">Результат</div><div class="flow-step-desc">Decode base64 → UIImage → imageView</div></div>
 </div>
-<div class="alert alert--ok"><strong>Преимущества:</strong> Ключи на сервере · Реальное списание монет · Rate limit · Usage log · Единая точка через aggai.ru</div>
+<div class="scue" id="sCue"><i></i><span>scroll</span></div>
+</section>
 
-<h2 style="margin-top:40px">Сравнение</h2>
-<div class="compare">
-<div class="compare-col" style="border-color:var(--rd)"><h3 style="color:var(--rd)">❌ Сейчас</h3><table>
-<tr><td>API</td><td>OpenRouter напрямую с iOS</td></tr>
-<tr><td>Ключ</td><td class="td-rd">В Swift коде</td></tr>
-<tr><td>Монеты</td><td class="td-rd">Не списываются</td></tr>
-<tr><td>Rate limit</td><td class="td-rd">Нет</td></tr>
-<tr><td>Logs</td><td class="td-rd">print() в Xcode</td></tr>
-<tr><td>Цена</td><td>~$0.04/edit</td></tr>
-</table></div>
-<div class="compare-col" style="border-color:var(--gn)"><h3 style="color:var(--gn)">✅ Цель</h3><table>
-<tr><td>API</td><td>Backend → aggai.ru</td></tr>
-<tr><td>Ключ</td><td class="td-gn">env var на сервере</td></tr>
-<tr><td>Монеты</td><td class="td-gn">Списание + баланс</td></tr>
-<tr><td>Rate limit</td><td class="td-gn">10 req/min Redis</td></tr>
-<tr><td>Logs</td><td class="td-gn">БД: tokens, cost, user</td></tr>
-<tr><td>Цена</td><td>~$0.04 → 5 монет (5₽)</td></tr>
-</table></div>
+<hr class="div">
+
+<!-- ══════ EQUATION ══════ -->
+<section>
+<div class="wrap">
+<div class="eq">
+  <div class="r"><div class="eq-v" style="color:var(--gd)">1 <small>монета</small></div><div class="eq-l">стоимость</div></div>
+  <div class="eq-op r d1">=</div>
+  <div class="r d2"><div class="eq-v" style="color:var(--ac-l)">1 ₽</div><div class="eq-l">фиксированный курс</div></div>
+  <div class="eq-op r d3">=</div>
+  <div class="r d4"><div class="eq-v" style="color:var(--gn)">$0.01</div><div class="eq-l">1$ = 100₽</div></div>
 </div>
-</div></section>
-
-<section id="payment"><div class="wrap">
-<h2>Платёжный шлюз <em style="color:var(--gd)">и монеты</em></h2>
-<div class="alert alert--info"><strong>Три платёжные системы уже реализованы.</strong> Платёжный шлюз внутри QRMe нужно подключить. Оплата через ООО «КуарМи». Потоки денег через aggai.ru.</div>
-
-<h3>Схема оплаты</h3>
-<div class="flow">
-<div class="flow-step flow-step--highlight"><div class="flow-step-num">Пользователь</div><div class="flow-step-title">Покупает пакет монет</div><div class="flow-step-desc">99₽ (100), 399₽ (500), 999₽ (1500), 2999₽ (5000)</div></div>
-<div class="flow-arrow">↓</div>
-<div class="flow-step flow-step--new"><div class="flow-step-num">Платёжная система</div><div class="flow-step-title">Одна из трёх платёжек (уже реализованы)</div><div class="flow-step-desc">Оплата на ООО «КуарМи» → webhook подтверждения</div></div>
-<div class="flow-arrow">↓</div>
-<div class="flow-step flow-step--new"><div class="flow-step-num">Backend QRMe <span class="badge badge--todo">сделать</span></div><div class="flow-step-title">Webhook: начисление монет</div><div class="flow-step-desc">Получить callback → начислить монеты → записать в coin_transactions</div></div>
-<div class="flow-arrow">↓</div>
-<div class="flow-step flow-step--new"><div class="flow-step-num">aggai.ru <span class="badge badge--wip">интеграция</span></div><div class="flow-step-title">Платёжный шлюз QRMe → aggai.ru</div><div class="flow-step-desc">Пополнение баланса aggai из доходов QRMe. Варианты: авто-пополнение по порогу, ручное, или aggai принимает оплаты через QRMe.</div></div>
 </div>
+</section>
 
-<h3>Потоки денег</h3>
-<pre>
-Пользователь → 999₽ → ООО «КуарМи» (одна из 3 платёжек)
-                          ↓
-              Backend начисляет 1500 монет на user_coins
-                          ↓
-              При AI-запросе: списать N монет
-              aggai.ru списывает $0.003-$0.04 с баланса QRMe
-                          ↓
-              Пополнение aggai.ru:
-                Вариант А: Вручную (текущий баланс $98.62)
-                Вариант Б: Авто через QRMe → aggai.ru шлюз
-                Вариант В: aggai.ru принимает оплаты через QRMe
-</pre>
+<div class="mq-w"><div class="mq">
+  <div class="mq-i">Gemini Pro <em>текст</em></div><div class="mq-i">GPT-4o <em>текст</em></div><div class="mq-i">Claude <em>текст</em></div><div class="mq-i">Gemini Flash <em>изображения</em></div><div class="mq-i">Seedream 4.5 <em>edit</em></div><div class="mq-i">Perplexity <em>поиск</em></div>
+  <div class="mq-i">Gemini Pro <em>текст</em></div><div class="mq-i">GPT-4o <em>текст</em></div><div class="mq-i">Claude <em>текст</em></div><div class="mq-i">Gemini Flash <em>изображения</em></div><div class="mq-i">Seedream 4.5 <em>edit</em></div><div class="mq-i">Perplexity <em>поиск</em></div>
+</div></div>
 
-<h3>Пакеты монет</h3>
-<table>
-<thead><tr><th>Пакет</th><th>Цена</th><th>Монет</th><th>₽/монета</th><th>Скидка</th><th>≈ получите</th></tr></thead>
-<tbody>
-<tr><td>Starter</td><td class="td-gd">99 ₽</td><td>100</td><td>0.99</td><td>—</td><td>100 чатов / 33 картинки / 20 edit</td></tr>
-<tr><td>Basic</td><td class="td-gd">399 ₽</td><td>500</td><td>0.80</td><td class="td-gn">−20%</td><td>500 чатов / 166 картинок / 100 edit</td></tr>
-<tr><td><strong>Pro</strong></td><td class="td-gd">999 ₽</td><td>1 500</td><td>0.67</td><td class="td-gn">−33%</td><td>1500 чатов / 500 картинок / 300 edit</td></tr>
-<tr><td>VIP</td><td class="td-gd">2 999 ₽</td><td>5 000</td><td>0.60</td><td class="td-gn">−40%</td><td>5000 чатов / 1666 картинок / 1000 edit</td></tr>
-</tbody></table>
+<!-- ══════ PRICING TABLE ══════ -->
+<section>
+<div class="wrap">
+  <div class="sh r"><div class="tc" style="margin-bottom:10px">01</div><h2 class="t2">Стоимость генерации <em class="ti" style="color:var(--gd)">в рублях</em></h2><p style="max-width:480px;margin-top:10px;font-size:.78rem;color:var(--tx2)">Фиксированная цена за каждую операцию.</p></div>
+  <div class="tbl-w r">
+  <table>
+    <thead><tr><th>Модель</th><th>Тип</th><th>Монет</th><th>Цена</th><th>Себестоимость</th><th>Маржа</th></tr></thead>
+    <tbody>
+      <tr><td><span class="td-dot" style="background:var(--gn)"></span>Gemini 3.1 Pro</td><td>текст</td><td><span class="td-coins">1</span></td><td class="td-rub">1 ₽</td><td style="color:var(--tx3)">~0.30 ₽</td><td style="color:var(--gn)">×3.3</td></tr>
+      <tr><td><span class="td-dot" style="background:#10A37F"></span>GPT-4o</td><td>текст</td><td><span class="td-coins">2</span></td><td class="td-rub">2 ₽</td><td style="color:var(--tx3)">~0.60 ₽</td><td style="color:var(--gn)">×3.3</td></tr>
+      <tr><td><span class="td-dot" style="background:var(--ac)"></span>Claude Sonnet</td><td>текст</td><td><span class="td-coins">2</span></td><td class="td-rub">2 ₽</td><td style="color:var(--tx3)">~0.90 ₽</td><td style="color:var(--gd)">×2.2</td></tr>
+      <tr><td><span class="td-dot" style="background:#4285F4"></span>Gemini Flash</td><td>картинка</td><td><span class="td-coins">3</span></td><td class="td-rub">3 ₽</td><td style="color:var(--tx3)">~1.50 ₽</td><td style="color:var(--gn)">×2.0</td></tr>
+      <tr><td><span class="td-dot" style="background:var(--rd)"></span>Seedream 4.5</td><td>edit фото</td><td><span class="td-coins">5</span></td><td class="td-rub">5 ₽</td><td style="color:var(--tx3)">~4.30 ₽</td><td style="color:var(--gd)">×1.2</td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+</section>
 
-<h3>Таблицы БД</h3>
-<pre>
-CREATE TABLE user_coins (
-  user_id UUID PRIMARY KEY REFERENCES users(identifier),
-  balance INTEGER NOT NULL DEFAULT 0,
-  updated_at TIMESTAMP DEFAULT NOW()
-);
+<!-- ══════ CALCULATOR ══════ -->
+<section>
+<div class="wrap">
+  <div class="sh r"><div class="tc" style="margin-bottom:10px">02</div><h2 class="t2">Калькулятор <em class="ti" style="color:var(--gd)">генераций</em></h2><p style="max-width:440px;margin-top:10px;font-size:.78rem;color:var(--tx2)">Выберите бюджет — посмотрите сколько генераций получите.</p></div>
+  <div class="calc r">
+    <div class="calc-top">
+      <div class="calc-val" id="calcVal">100 <small>₽</small></div>
+      <div class="calc-coins" id="calcCoins"><b id="calcCn">100</b>&nbsp;монет</div>
+    </div>
+    <input type="range" class="calc-range" id="calcRange" min="50" max="5000" value="100" step="50">
+    <div class="calc-grid" id="calcGrid"></div>
+  </div>
+</div>
+</section>
 
-CREATE TABLE coin_transactions (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID NOT NULL REFERENCES users(identifier),
-  amount INTEGER NOT NULL,        -- + пополнение, − списание
-  type VARCHAR(20) NOT NULL,      -- 'topup','ai_edit','ai_chat','ai_image_gen'
-  description TEXT,
-  metadata JSONB,                 -- {model, prompt_preview, cost_usd, tokens, payment_id}
-  created_at TIMESTAMP DEFAULT NOW()
-);</pre>
-</div></section>
+<!-- ══════ PACKAGES ══════ -->
+<section>
+<div class="wrap">
+  <div class="sh r"><div class="tc" style="margin-bottom:10px">03</div><h2 class="t2">Пакеты <em class="ti" style="color:var(--gd)">монет</em></h2><p style="max-width:400px;margin-top:10px;font-size:.78rem;color:var(--tx2)">Больше пакет — дешевле монета. Монеты не&nbsp;сгорают.</p></div>
+  <div class="pkgs">
+    <div class="pkg r d1"><div class="pkg-name">Starter</div><div class="pkg-price">99 <small>₽</small></div><div class="pkg-coins">100 монет</div><div class="pkg-per">0.99 ₽ / монета</div><div class="pkg-ex">≈ <b>100</b> сообщений Gemini<br>или <b>33</b> картинки</div></div>
+    <div class="pkg r d2"><div class="pkg-name">Basic</div><div class="pkg-price">399 <small>₽</small></div><div class="pkg-coins">500 монет</div><div class="pkg-per">0.80 ₽ / монета</div><div class="pkg-disc">−20%</div><div class="pkg-ex">≈ <b>500</b> сообщений<br>или <b>166</b> картинок</div></div>
+    <div class="pkg pkg--f r d3"><div class="pkg-name">Pro</div><div class="pkg-price">999 <small>₽</small></div><div class="pkg-coins">1 500 монет</div><div class="pkg-per">0.67 ₽ / монета</div><div class="pkg-disc">−33%</div><div class="pkg-ex">≈ <b>1 500</b> сообщений<br>или <b>500</b> картинок</div></div>
+    <div class="pkg r d4"><div class="pkg-name">VIP</div><div class="pkg-price">2 999 <small>₽</small></div><div class="pkg-coins">5 000 монет</div><div class="pkg-per">0.60 ₽ / монета</div><div class="pkg-disc">−40%</div><div class="pkg-ex">≈ <b>5 000</b> сообщений<br>или <b>1 000</b> картинок</div></div>
+  </div>
+</div>
+</section>
 
-<section id="tasks"><div class="wrap">
-<h2>Задачи для <em style="color:var(--gd)">Таймураза</em></h2>
-<div class="cards">
-<div class="card" style="border-left:3px solid var(--rd)"><div style="display:flex;justify-content:space-between"><div class="card-title">1. aggai.ru: multimodal input</div><span class="badge badge--todo">блокер</span></div><div class="card-desc" style="margin-top:8px"><span class="c">apiConversationMessages</span> должен принимать <span class="c">content</span> массив с <span class="c">image_url</span> + <span class="c">text</span>.<br>Сейчас: только <span class="c">"input": "строка"</span>. Ошибка: <span class="c">input.substring is not a function</span></div></div>
+<!-- ══════ PIPELINE ══════ -->
+<section>
+<div class="wrap">
+  <div class="sh r"><div class="tc" style="margin-bottom:10px">04</div><h2 class="t2">AI-редактор <em class="ti" style="color:var(--gd)">изображений</em></h2></div>
+  <div class="pipe">
+    <div class="pipe-s r d1"><div class="pipe-n">01</div><div class="t3">Запрос</div><div class="pipe-d">«Сделай фон закатом»</div><div class="pipe-tag">вход</div></div>
+    <div class="pipe-s r d2"><div class="pipe-n">02</div><div class="t3">LLM</div><div class="pipe-d">Gemini Pro улучшает промпт</div><div class="pipe-tag">~0.30 ₽</div></div>
+    <div class="pipe-s r d3"><div class="pipe-n">03</div><div class="t3">Seedream</div><div class="pipe-d">Промпт + фото → fal.ai</div><div class="pipe-tag">~4.00 ₽</div></div>
+    <div class="pipe-s r d4"><div class="pipe-n">04</div><div class="t3">Результат</div><div class="pipe-d">CDN → редактор</div><div class="pipe-tag">= 5 монет</div></div>
+  </div>
+</div>
+</section>
 
-<div class="card" style="border-left:3px solid var(--gd)"><div style="display:flex;justify-content:space-between"><div class="card-title">2. Backend: POST /v3/ai/edit-image</div><span class="badge badge--todo">backend</span></div><div class="card-desc" style="margin-top:8px">Принимает <span class="c">{imageBase64, userPrompt}</span> с JWT.<br>Проверяет баланс → вызывает aggai → списывает монеты → возвращает результат.</div></div>
+<section style="padding:0"><div class="wrap"><div class="foot"><div class="foot-logo">QR<em>Me</em></div><div class="foot-note">Апрель 2026 · 1$ = 100₽ · aggai.ru + fal.ai</div></div></div></section>
 
-<div class="card" style="border-left:3px solid var(--gd)"><div style="display:flex;justify-content:space-between"><div class="card-title">3. Модель в QRmodels</div><span class="badge badge--wip">aggai admin</span></div><div class="card-desc" style="margin-top:8px">Добавить <span class="c">gemini-2.5-flash-image</span> в <span class="c">QRmodels</span>. Уже есть в <span class="c">classic_models</span>.</div></div>
+<script>
+(()=>{
+'use strict';
+const lerp=(a,b,n)=>(1-n)*a+n*b;
+let mx=innerWidth/2,my=innerHeight/2;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY},{passive:true});
 
-<div class="card" style="border-left:3px solid var(--gd)"><div style="display:flex;justify-content:space-between"><div class="card-title">4. Система монет</div><span class="badge badge--todo">backend + БД</span></div><div class="card-desc" style="margin-top:8px">Таблицы <span class="c">user_coins</span> + <span class="c">coin_transactions</span>.<br>API: баланс, пополнение, списание. Webhook от платёжки.</div></div>
+/* Cursor */
+const cR=document.getElementById('cR'),cD=document.getElementById('cD');
+if(cR&&matchMedia('(hover:hover)').matches){
+  let cx=mx,cy=my;
+  (function rC(){cx=lerp(cx,mx,.12);cy=lerp(cy,my,.12);cR.style.transform=`translate(${cx-12}px,${cy-12}px)`;cD.style.transform=`translate(${mx-1.5}px,${my-1.5}px)`;requestAnimationFrame(rC)})();
+  document.querySelectorAll('.pkg,.pipe-s,.calc,.mq-i,a,button,input,tr,.scue').forEach(el=>{el.addEventListener('mouseenter',()=>cR.classList.add('hov'));el.addEventListener('mouseleave',()=>cR.classList.remove('hov'))});
+}
 
-<div class="card" style="border-left:3px solid var(--ac)"><div style="display:flex;justify-content:space-between"><div class="card-title">5. Платёжный шлюз QRMe → aggai</div><span class="badge badge--todo">интеграция</span></div><div class="card-desc" style="margin-top:8px">Подключить платёжку к backend. Оплата на ООО «КуарМи».<br>Webhook → монеты. Пополнение aggai.ru баланса.</div></div>
+/* Progress */
+const prog=document.getElementById('prog');
+addEventListener('scroll',()=>{prog.style.width=(scrollY/(document.documentElement.scrollHeight-innerHeight)*100)+'%'},{passive:true});
 
-<div class="card" style="border-left:3px solid var(--gn)"><div style="display:flex;justify-content:space-between"><div class="card-title">6. iOS: переключить на бэкенд</div><span class="badge badge--info">после 1-5</span></div><div class="card-desc" style="margin-top:8px">Заменить OpenRouter → <span class="c">POST /v3/ai/edit-image</span>. Убрать хардкод ключа. Endpoint готов: <span class="c">AIEditAPI_V3.swift</span></div></div>
-</div></div></section>
+/* Reveals */
+const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('v')})},{threshold:.06,rootMargin:'0px 0px -20px'});
+document.querySelectorAll('.r').forEach(el=>io.observe(el));
 
-<section id="models"><div class="wrap">
-<h2>Модели для <em style="color:var(--gd)">image editing</em></h2>
-<p>Проверено 5 апреля 2026. Input: image+text → Output: image+text.</p>
-<table>
-<thead><tr><th>Модель</th><th>Сервис</th><th>In/1M</th><th>Out/1M</th><th>~₽/edit</th><th>Тест</th></tr></thead>
-<tbody>
-<tr><td><strong>gemini-2.5-flash-image</strong></td><td>classic</td><td>$0.60</td><td>$5.00</td><td class="td-gd">~4₽</td><td class="td-gn">✅ Работает</td></tr>
-<tr><td>gemini-3.1-flash-image-preview</td><td>classic+QR</td><td>$0.50</td><td>$3.00</td><td>~0.3₽</td><td class="td-rd">❌ aggai нет multimodal</td></tr>
-<tr><td>gemini-3-pro-image-preview</td><td>classic</td><td>$4.00</td><td>$24.00</td><td>~2.4₽</td><td>—</td></tr>
-<tr><td>gpt-5-image-mini</td><td>classic</td><td>$5.00</td><td>$4.00</td><td>~5₽</td><td>—</td></tr>
-<tr><td>gpt-5-image</td><td>classic</td><td>$20</td><td>$20</td><td>~20₽</td><td>Дорого</td></tr>
-</tbody></table>
-<div class="alert alert--warn"><strong>Блокер:</strong> aggai.ru <span class="c">input</span> — только строка. Для editing нужен multimodal <span class="c">content</span> массив с base64 изображением.</div>
+/* Hero title split */
+const ht=document.getElementById('ht');
+ht.innerHTML='<span class="grad" style="background:linear-gradient(135deg,var(--ac-l),var(--gd));-webkit-background-clip:text;-webkit-text-fill-color:transparent">AI</span> в каждом<br><em class="ti">сообщении</em>';
+(function sp(el){const w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT);const ns=[];while(w.nextNode())ns.push(w.currentNode);ns.forEach(n=>{const f=document.createDocumentFragment();[...n.textContent].forEach((c,i)=>{const s=document.createElement('span');s.textContent=c===' '?'\u00A0':c;s.style.transitionDelay=i*.03+'s';f.appendChild(s)});n.parentNode.replaceChild(f,n)})})(ht);
+new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('v')})},{threshold:.2}).observe(ht);
 
-<h3>Баланс aggai.ru</h3>
-<table><tr><td>Баланс</td><td class="td-gd">$98.62</td></tr><tr><td>Free requests</td><td>500</td></tr></table>
-</div></section>
+/* Counters */
+document.querySelectorAll('.cnt').forEach(el=>{
+  new IntersectionObserver(es=>{es.forEach(e=>{if(!e.isIntersecting)return;const t=+e.target.dataset.t,s=performance.now();(function tk(n){const p=Math.min((n-s)/1200,1);e.target.textContent=Math.round(t*(1-Math.pow(1-p,4)));if(p<1)requestAnimationFrame(tk)})(s);e.target._io.disconnect()})},{threshold:.5}).observe(el);el._io=el._io||{disconnect(){}};el._io=arguments[0]||el._io});
+// fix: proper counter observer
+document.querySelectorAll('.cnt').forEach(el=>{
+  const ob=new IntersectionObserver(es=>{es.forEach(e=>{if(!e.isIntersecting)return;const t=+e.target.dataset.t,s=performance.now();(function tk(n){const p=Math.min((n-s)/1200,1);e.target.textContent=Math.round(t*(1-Math.pow(1-p,4)));if(p<1)requestAnimationFrame(tk)})(s);ob.unobserve(e.target)})},{threshold:.5});
+  ob.observe(el);
+});
 
-<section><div class="wrap">
-<h2>Файлы iOS <em style="color:var(--gd)">(ветка feature/ai-image-editor)</em></h2>
-<table>
-<thead><tr><th>Файл</th><th></th><th>Описание</th></tr></thead>
-<tbody>
-<tr><td><span class="c">QRmeAIEditService.swift</span></td><td><span class="badge badge--ok">new</span></td><td>Сервис: resize → base64 → OpenRouter → decode. Retry + fallback 3 модели</td></tr>
-<tr><td><span class="c">AIEditAPI_V3.swift</span></td><td><span class="badge badge--ok">new</span></td><td>Moya endpoint POST /v3/ai/edit-image (заготовка для бэкенда)</td></tr>
-<tr><td><span class="c">QRmePhotoEditorViewController.swift</span></td><td><span class="badge badge--wip">mod</span></td><td>Кнопка «✦ Изменить с ИИ ⬡5», prompt overlay, animated stages</td></tr>
-<tr><td><span class="c">QRme-Info.plist</span></td><td><span class="badge badge--wip">mod</span></td><td>ATS exception (убрать в prod)</td></tr>
-</tbody></table>
-</div></section>
+/* Floating coins */
+const fc=document.getElementById('fcoins');
+const sty=document.createElement('style');
+sty.textContent=`@keyframes flt{0%{transform:translateY(105vh) rotate(0deg) rotateY(0deg);opacity:0}8%{opacity:.1}92%{opacity:.1}100%{transform:translateY(-5vh) rotate(540deg) rotateY(720deg);opacity:0}}@keyframes fsway{0%,100%{margin-left:0}50%{margin-left:30px}}`;
+document.head.appendChild(sty);
+for(let i=0;i<14;i++){const d=document.createElement('div');d.className='fcoin';const sz=12+Math.random()*30;const sway=20+Math.random()*40;d.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*95}%;animation:flt ${22+Math.random()*35}s ${Math.random()*-30}s linear infinite,fsway ${8+Math.random()*12}s ${Math.random()*-8}s ease-in-out infinite`;fc.appendChild(d)}
 
-<section style="border:none;padding:32px 0"><div class="wrap" style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;color:var(--tx3);font-size:.65rem">
-<div>QRMe AI · April 2026</div><div><span class="c">feature/ai-image-editor</span> · 1$ = 100₽ · aggai.ru balance $98.62</div>
-</div></section>
+/* Coin edges */
+const coinB=document.getElementById('coinB');
+for(let i=0;i<50;i++){const e=document.createElement('div');e.className='coin-edge';const z=(i-25)*.7,l=48+Math.abs(z)*.5;e.style.cssText=`transform:translateZ(${z}px);background:linear-gradient(180deg,hsl(43,75%,${l}%),hsl(38,65%,${l-8}%),hsl(43,75%,${l}%));opacity:.9`;coinB.insertBefore(e,coinB.firstChild)}
+
+/* Coin tilt */
+const coinSc=document.getElementById('coinSc');
+coinSc.addEventListener('mouseenter',()=>{coinB.style.animationPlayState='paused'});
+coinSc.addEventListener('mouseleave',()=>{coinB.style.animationPlayState='';coinB.style.transform=''});
+coinSc.addEventListener('mousemove',e=>{const r=coinSc.getBoundingClientRect();coinB.style.transform=`rotateX(${((e.clientY-r.top-r.height/2)/(r.height/2))*16}deg) rotateY(${-((r.width/2-(e.clientX-r.left))/(r.width/2))*20}deg)`});
+
+/* Calculator */
+const models=[{icon:'💬',name:'Gemini Pro',coins:1},{icon:'🧠',name:'GPT-4o',coins:2},{icon:'✦',name:'Claude',coins:2},{icon:'🎨',name:'Gemini Flash',coins:3},{icon:'✏️',name:'Seedream 4.5',coins:5}];
+const cR2=document.getElementById('calcRange'),cV=document.getElementById('calcVal'),cCn=document.getElementById('calcCn'),cG=document.getElementById('calcGrid');
+function coinsFor(r){if(r>=2999)return Math.round(r/.6);if(r>=999)return Math.round(r/.67);if(r>=399)return Math.round(r/.8);return Math.round(r/.99)}
+function upCalc(){const r=+cR2.value,c=coinsFor(r);cV.innerHTML=r.toLocaleString('ru')+' <small>₽</small>';cCn.textContent=c.toLocaleString('ru');cG.innerHTML=models.map(m=>`<div class="calc-item"><div class="calc-item-icon">${m.icon}</div><div><div class="calc-item-name">${m.name}</div><div class="calc-item-val">${Math.floor(c/m.coins).toLocaleString('ru')}</div><div class="calc-item-unit">генераций</div></div></div>`).join('');const p=((r-50)/4950)*100;cR2.style.background=`linear-gradient(90deg,var(--gd) ${p}%,var(--tx3) ${p}%)`}
+cR2.addEventListener('input',upCalc);upCalc();
+
+/* Scroll cue */
+document.getElementById('sCue')?.addEventListener('click',()=>{document.querySelector('.hero')?.nextElementSibling?.scrollIntoView({behavior:'smooth'})});
+})();
+</script>
 </body>
 </html>
